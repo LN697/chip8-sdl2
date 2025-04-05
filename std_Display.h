@@ -17,8 +17,8 @@ class cSDL {
         SDL_Window* _window;
         SDL_Renderer* _renderer;
         SDL_Rect rect;
-        uint32_t fg_col = FG_COLOR;
-        uint32_t bg_col = BG_COLOR;
+        const uint32_t fg_col = FG_COLOR;
+        const uint32_t bg_col = BG_COLOR;
     public:
         cSDL () {};
         cSDL (SDL_Window* window, SDL_Renderer* renderer) : _window(window), _renderer(renderer) {};
@@ -46,7 +46,7 @@ class cSDL {
             rect = {.x = 0, .y = 0, .w = DISP_FACTOR, .h = DISP_FACTOR};
         }
 
-        void UpdateFrame (uint8_t* disp) {
+        void UpdateFrame (uint8_t* disp, uint32_t* color) {
             SDL_SetRenderDrawColor(_renderer, 0x00, 0x00, 0x00, 0xFF);
             SDL_RenderClear(_renderer);
 
@@ -55,14 +55,20 @@ class cSDL {
                 rect.y = (i / DISP_WIDTH) * DISP_FACTOR;
 
                 if (disp[i] == 0x1) {
-                    SDL_SetRenderDrawColor(_renderer, (fg_col >> 24) & 0xFF, (fg_col >> 16) & 0xFF, (fg_col >> 8) & 0xFF, (fg_col) & 0xFF);
+                    if (color[i] != FG_COLOR) {
+                        color[i] = ColorLerp(fg_col, color[i]);
+                    }
+                    SDL_SetRenderDrawColor(_renderer, (color[i] >> 24) & 0xFF, (color[i] >> 16) & 0xFF, (color[i] >> 8) & 0xFF, (color[i]) & 0xFF);
                     SDL_RenderFillRect(_renderer, &rect);
                     if (OUTLINES) {
-                        SDL_SetRenderDrawColor(_renderer, (bg_col >> 24) & 0xFF, (bg_col >> 16) & 0xFF, (bg_col >> 8) & 0xFF, (bg_col) & 0xFF);
+                        SDL_SetRenderDrawColor(_renderer, (color[i] >> 24) & 0xFF, (color[i] >> 16) & 0xFF, (color[i] >> 8) & 0xFF, (color[i]) & 0xFF);
                         SDL_RenderDrawRect(_renderer, &rect);
                     }
                 } else {
-                    SDL_SetRenderDrawColor(_renderer, (bg_col >> 24) & 0xFF, (bg_col >> 16) & 0xFF, (bg_col >> 8) & 0xFF, (bg_col) & 0xFF);
+                    if (color[i] != BG_COLOR) {
+                        color[i] = ColorLerp(bg_col, color[i]);
+                    }
+                    SDL_SetRenderDrawColor(_renderer, (color[i] >> 24) & 0xFF, (color[i] >> 16) & 0xFF, (color[i] >> 8) & 0xFF, (color[i]) & 0xFF);
                     SDL_RenderFillRect(_renderer, &rect);
                 }
             }
@@ -74,6 +80,15 @@ class cSDL {
             SDL_DestroyRenderer(_renderer);
             SDL_DestroyWindow(_window);
             SDL_Quit();
+        }
+        
+        uint32_t ColorLerp(const uint32_t start, const uint32_t end) {
+            const uint8_t r = (start >> 24) + LERP_RATE * ((end >> 24) - (start >> 24));
+            const uint8_t g = (start >> 16) + LERP_RATE * ((end >> 16) - (start >> 16));
+            const uint8_t b = (start >> 8) + LERP_RATE * ((end >> 8) - (start >> 8));
+            const uint8_t a = (start) + LERP_RATE * ((end) - (start));
+
+            return (r << 24) | (g << 16) | (b << 8) | a;
         }
 };
 

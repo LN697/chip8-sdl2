@@ -7,6 +7,8 @@ long int cycle = 0;
 uint8_t	frame_buffer[DISP_HEIGHT * DISP_WIDTH] {};
 uint8_t memory[4 * ONE_K] {0};
 
+uint32_t color_buffer[DISP_HEIGHT * DISP_WIDTH] {};
+
 uint8_t delay_timer{};
 uint8_t sound_timer{};
 
@@ -541,6 +543,7 @@ int main(int argc, char **argv) {
 	cpu.LoadFontToMem();
 
 	sdl_ctl.InitSDL();
+	memset(color_buffer, BG_COLOR, sizeof color_buffer);
 	bool quit = false;
 
     SDL_Event e;
@@ -573,7 +576,7 @@ int main(int argc, char **argv) {
 		if (elapsed < DELAY_MS) {
 			SDL_Delay(DELAY_MS - elapsed);
 		}
-		sdl_ctl.UpdateFrame(frame_buffer);
+		sdl_ctl.UpdateFrame(frame_buffer, color_buffer);
 		cpu.HandleTimers();
 		cpu.HandleInputs();
 	}
