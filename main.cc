@@ -107,22 +107,22 @@ class cCPU  {
 			}
 		}
 
-		void DisplayFont () {
-			for (int character = 0; character < 16; character++) {
-				for (int row = 0; row < 5; row++) {
-					unsigned char byte = _mem[0x50 + character * 5 + row];
-					for (int bit = 7; bit >= 4; bit--) {
-						if ((byte >> bit) & 1) {
-							std::cout << "*";
-						} else {
-							std::cout << " ";
-						}
-					}
-					std::cout << "\n";
-				}
-				std::cout << "\n";
-			}
-		}
+		// void DisplayFont () {
+		// 	for (int character = 0; character < 16; character++) {
+		// 		for (int row = 0; row < 5; row++) {
+		// 			unsigned char byte = _mem[0x50 + character * 5 + row];
+		// 			for (int bit = 7; bit >= 4; bit--) {
+		// 				if ((byte >> bit) & 1) {
+		// 					std::cout << "*";
+		// 				} else {
+		// 					std::cout << " ";
+		// 				}
+		// 			}
+		// 			std::cout << "\n";
+		// 		}
+		// 		std::cout << "\n";
+		// 	}
+		// }
 
 		void Fetch () { // BIG_ENDIAN
 			instr = _mem[_reg->PC] << 8;
