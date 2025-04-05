@@ -366,7 +366,7 @@ class cCPU  {
 							#ifdef DEBUG
 								nDebug::LogInfo("Wait for key press and store in V[", X, "]");
 							#endif
-							
+							key_pressed = false;							
 							for (int i = 0; i < 16; ++i) {
 								if (keypad[i]) {
 									_reg->V[X] = i;
@@ -453,10 +453,10 @@ class cCPU  {
 			if (*_delay > 0) {
 				--(*_delay);
 			}
-			if (*_sound > 0) {
-				if (*_sound == 1) {
+			if (*_sound > 0) {				
+				#ifdef DEBUG
 					nDebug::LogInfo("BEEP!");
-				}
+				#endif
 				--(*_sound);
 			}
 		}
@@ -470,7 +470,6 @@ class cCPU  {
 				nDebug::LogInfo("Step: ", cycle);
 			#endif
 
-			key_pressed = false;
 			Fetch();			
 			Decode();
 			Execute();
@@ -568,22 +567,24 @@ int main(int argc, char **argv) {
 	    }
 		const uint64_t start_frame = SDL_GetPerformanceCounter();
 		for (int i = 0; i < INST_PER_SEC; ++i) {
+			cpu.HandleInputs();
 			cpu.Run();
 		}
 		const uint64_t end_frame = SDL_GetPerformanceCounter();
-		const double elapsed = (double) ((end_frame - start_frame) / 1000) / SDL_GetPerformanceFrequency();
+		const double elapsed = (double) ((end_frame - start_frame) * 1000) / SDL_GetPerformanceFrequency();
 		if (elapsed < DELAY_MS) {
 			SDL_Delay(DELAY_MS - elapsed);
 		}
 		sdl_ctl.UpdateFrame(frame_buffer);
-		cpu.HandleInputs();
 		cpu.HandleTimers();
 	}
 
 	sdl_ctl.QuitSDL();
 
-	nDebug::LogInfo("Dumping Memory...");
-	cpu.MemDump();
+	#ifdef DEBUG
+		nDebug::LogInfo("Dumping Memory...");
+		cpu.MemDump();
+	#endif
 
 	return 0;
 }
