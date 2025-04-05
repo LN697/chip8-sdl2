@@ -3,7 +3,7 @@
 #ifndef CHIP8Includes
 #define CHIP8Includes
 
-#define DEBUG
+// #define DEBUG
 
 #define DISP_HEIGHT 32
 #define DISP_WIDTH  64
