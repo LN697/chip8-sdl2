@@ -249,7 +249,7 @@ class cCPU  {
 								nDebug::LogInfo("Set V[", X,"] -= V[", Y,"]");
 							#endif
 							_reg->V[X] -= _reg->V[Y];
-							if (_reg->V[X] > _reg->V[Y]) {
+							if (_reg->V[X] < _reg->V[Y]) {
 								_reg->V[0xF] = 0x1;
 							} else {
 								_reg->V[0xF] = 0x0;
@@ -257,11 +257,10 @@ class cCPU  {
 							break;
 						case (0x6):
 							#ifdef DEBUG
-								nDebug::LogInfo("Set V[", X,"] to V[", Y,"] and shift right by 1");
+								nDebug::LogInfo("Shift V[", X, "] right by 1. Set VF to LSB before shift.");
 							#endif
-							_reg->V[X] = _reg->V[Y];
-							_reg->V[0xF] = _reg->V[X] >> 7;
-							_reg->V[X] <<= 1;
+							_reg->V[0xF] = _reg->V[X] & 0x01; // LSB before shift
+							_reg->V[X] >>= 1;
 							break;
 						case (0x7):
 							#ifdef DEBUG
@@ -276,11 +275,10 @@ class cCPU  {
 							break;
 						case (0xE):
 							#ifdef DEBUG
-								nDebug::LogInfo("Set V[", X,"] to V[", Y,"] and shift left by 1");
+								nDebug::LogInfo("Shift V[", X, "] left by 1. Set VF to MSB before shift.");
 							#endif
-							_reg->V[X] = _reg->V[Y];
-							_reg->V[0xF] = _reg->V[X] & 0x01;
-							_reg->V[X] >>= 1;
+							_reg->V[0xF] = (_reg->V[X] & 0x80) >> 7; // MSB before shift
+							_reg->V[X] <<= 1;
 							break;
 					}	
 					break;
@@ -540,6 +538,7 @@ int main(int argc, char **argv) {
 	cSDL sdl_ctl(sdl.dispWindow, sdl.dispRenderer);
 
 	cpu.InitToRom();
+	cpu.LoadFontToMem();
 
 	sdl_ctl.InitSDL();
 	bool quit = false;
