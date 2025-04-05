@@ -565,8 +565,7 @@ int main(int argc, char **argv) {
 
 	    }
 		const uint64_t start_frame = SDL_GetPerformanceCounter();
-		for (int i = 0; i < INST_PER_SEC; ++i) {
-			cpu.HandleInputs();
+		for (int i = 0; i < INST_PER_SEC / 60; ++i) {
 			cpu.Run();
 		}
 		const uint64_t end_frame = SDL_GetPerformanceCounter();
@@ -576,6 +575,7 @@ int main(int argc, char **argv) {
 		}
 		sdl_ctl.UpdateFrame(frame_buffer);
 		cpu.HandleTimers();
+		cpu.HandleInputs();
 	}
 
 	sdl_ctl.QuitSDL();
