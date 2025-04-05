@@ -61,14 +61,14 @@ class cSDL {
                     SDL_SetRenderDrawColor(_renderer, (color[i] >> 24) & 0xFF, (color[i] >> 16) & 0xFF, (color[i] >> 8) & 0xFF, (color[i]) & 0xFF);
                     SDL_RenderFillRect(_renderer, &rect);
                     if (OUTLINES) {
-                        SDL_SetRenderDrawColor(_renderer, (color[i] >> 24) & 0xFF, (color[i] >> 16) & 0xFF, (color[i] >> 8) & 0xFF, (color[i]) & 0xFF);
+                        SDL_SetRenderDrawColor(_renderer, (bg_col >> 24) & 0xFF, (bg_col >> 16) & 0xFF, (bg_col >> 8) & 0xFF, (bg_col) & 0xFF);
                         SDL_RenderDrawRect(_renderer, &rect);
                     }
                 } else {
                     if (color[i] != BG_COLOR) {
                         color[i] = ColorLerp(bg_col, color[i]);
                     }
-                    SDL_SetRenderDrawColor(_renderer, (color[i] >> 24) & 0xFF, (color[i] >> 16) & 0xFF, (color[i] >> 8) & 0xFF, (color[i]) & 0xFF);
+                    SDL_SetRenderDrawColor(_renderer, (bg_col >> 24) & 0xFF, (bg_col >> 16) & 0xFF, (bg_col >> 8) & 0xFF, (bg_col) & 0xFF);
                     SDL_RenderFillRect(_renderer, &rect);
                 }
             }
