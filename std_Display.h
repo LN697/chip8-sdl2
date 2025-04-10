@@ -58,7 +58,7 @@ class cSDL {
                     if (color[i] != FG_COLOR) {
                         color[i] = ColorLerp(fg_col, color[i]);
                     }
-                    SDL_SetRenderDrawColor(_renderer, (color[i] >> 24) & 0xFF, (color[i] >> 16) & 0xFF, (color[i] >> 8) & 0xFF, (color[i]) & 0xFF);
+                    SDL_SetRenderDrawColor(_renderer, (fg_col >> 24) & 0xFF, (fg_col >> 16) & 0xFF, (fg_col >> 8) & 0xFF, (fg_col) & 0xFF);
                     SDL_RenderFillRect(_renderer, &rect);
                     if (OUTLINES) {
                         SDL_SetRenderDrawColor(_renderer, (bg_col >> 24) & 0xFF, (bg_col >> 16) & 0xFF, (bg_col >> 8) & 0xFF, (bg_col) & 0xFF);
